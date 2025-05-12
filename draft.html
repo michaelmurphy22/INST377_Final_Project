@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <title>Home Page</title>
+        <link rel="stylesheet" href="draft.css">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+        <script src="draft.js" defer></script>
+    </head>
+    <body>
+        <header>
+            <h1>Team Drafter</h1>
+        </header>
+
+        <nav id="navBar">
+            <ul>
+                <li><a href="home_page.html">Home</a></li>
+                <li><a href="draft.html">Draft</a></li>
+                <li><a href="about.html">Help</a></li>
+            </ul> 
+        </nav>
+
+        <div class="drafter-container">
+            <div class="draft-section">
+                <h2>Select Position</h2>
+                <select id="selectPosition">
+                    <option value="ALL">All Positions</option>
+                    <option value="QB">Quarterback (QB)</option>
+                    <option value="RB">Running Back (RB)</option>
+                    <option value="WR">Wide Receiver (WR)</option>
+                    <option value="TE">Tight End (TE)</option>
+                </select>
+                <br>
+                <h2>Select Players</h2>
+                <div class="player-boxes" id="playerBoxes"></div>
+            </div>
+          
+            <div class="drafted-team">
+              <h2>Your Drafted Team</h2>
+              <ul id="draftedList"></ul>
+          
+              <h2>Auto-Selected Starters</h2>
+              <div id="starterList"></div>
+            </div>
+        </div>
+    </body>
+</html>

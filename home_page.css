@@ -1,0 +1,45 @@
+header {
+    width: 100%;
+    text-align: center;
+    background-color: rgb(81, 198, 81);
+}
+
+body {
+    background-color: rgb(230, 230, 55);
+}
+
+#navBar {
+    background-color: rgb(81, 198, 81);
+    text-align: center;
+}
+
+#navBar li {
+    display: inline-block;
+    position: relative;
+    color: blue;
+    padding: 20px;
+    font-size: x-large;
+}
+
+#navBar li:hover {
+    background-color: white;
+}
+
+.containers {
+    display: flex;
+    justify-content: space-between;
+}
+
+.instructions-box {
+    background-color: white;
+    text-align: center;
+    width: 40%;
+}
+
+.team-box {
+    background-color: white;
+    text-align: center;
+    width: 40%;
+    height: auto;
+}
+
