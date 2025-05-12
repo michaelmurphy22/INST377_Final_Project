@@ -2,16 +2,12 @@ const removedFromDraftList = [];
 
 function getDraftData() {
   return fetch("https://api.fantasynerds.com/v1/nfl/draft-rankings?apikey=TEST&format=")
-    .then(function (result) {
-      return result.json();
-    });
+    .then((res) => res.json());
 }
 
 function getProjectedData() {
   return fetch("https://api.fantasynerds.com/v1/nfl/dfs?apikey=TEST&slateId=")
-    .then(function (res) {
-      return res.json();
-    });
+    .then((res) => res.json());
 }
 
 function showPlayerProfiles(player) {
@@ -39,160 +35,130 @@ function removeFromDraftCard(button) {
   loadPlayers();
 }
 
-function addToDraft(name, team, position) {
-  const player = { name, team, position };
-  let teamData = JSON.parse(localStorage.getItem("fantasyTeam")) || [];
-
-  const alreadyAdded = teamData.some(function (p) {
-    return p.name === name && p.team === team;
+async function addToDraft(name, team, position) {
+  await fetch('/team', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, team, position })
   });
 
-  if (!alreadyAdded) {
-    teamData.push(player);
-    localStorage.setItem("fantasyTeam", JSON.stringify(teamData));
-  }
-
   renderDraftedList();
   updateStarters();
 }
 
-function removeFromDraft(name, team) {
-  let teamData = JSON.parse(localStorage.getItem("fantasyTeam")) || [];
-  teamData = teamData.filter(function (p) {
-    return !(p.name === name && p.team === team);
+async function removeFromDraft(name, team) {
+  await fetch('/team', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, team })
   });
-  localStorage.setItem("fantasyTeam", JSON.stringify(teamData));
+
   renderDraftedList();
   updateStarters();
 }
 
-function clearTeam() {
-  localStorage.removeItem("fantasyTeam");
-  renderDraftedList();
-  updateStarters();
-}
-
-function renderDraftedList() {
+async function renderDraftedList() {
   const list = document.getElementById("draftedList");
   list.innerHTML = "";
 
-  const teamData = JSON.parse(localStorage.getItem("fantasyTeam")) || [];
+  const res = await fetch('/team');
+  const teamData = await res.json();
 
-  teamData.forEach(function (player) {
+  teamData.forEach((player) => {
     const item = document.createElement("li");
-    item.textContent = `${player.name} (${player.team} - ${player.position}) `;
+    item.textContent = `${player.name} (${player.team} - ${player.position})`;
 
     const removeBtn = document.createElement("button");
     removeBtn.textContent = "Remove";
-    removeBtn.onclick = function () {
-      removeFromDraft(player.name, player.team);
-    };
+    removeBtn.onclick = () => removeFromDraft(player.name, player.team);
 
     item.appendChild(removeBtn);
     list.appendChild(item);
   });
-
-  const clearBtn = document.getElementById("clearTeamButton");
-  if (!clearBtn) {
-    const button = document.createElement("button");
-    button.id = "clearTeamButton";
-    button.textContent = "Clear Entire Team";
-    button.style.marginTop = "10px";
-    button.onclick = clearTeam;
-    list.parentElement.appendChild(button);
-  }
 }
 
 async function loadPlayers() {
   const position = document.getElementById("selectPosition").value;
   const data = await getDraftData();
-  const allPlayers = data.players;
+  const allPlayers = data.players || [];
 
   let filtered = allPlayers
-    .filter(function (p) {
-      return position === "ALL" || p.position === position;
-    })
-    .filter(function (p) {
-      return !removedFromDraftList.includes(p.name);
-    })
-    .sort(function (a, b) {
-      return position === "ALL" ? a.rank - b.rank : a.rank_position - b.rank_position;
-    })
+    .filter((p) => position === "ALL" || p.position === position)
+    .filter((p) => !removedFromDraftList.includes(p.name))
+    .sort((a, b) =>
+      position === "ALL" ? a.rank - b.rank : a.rank_position - b.rank_position
+    )
     .slice(0, 10);
 
   const playerContainer = document.getElementById("playerBoxes");
   playerContainer.innerHTML = "";
 
-  filtered.forEach(function (player) {
+  filtered.forEach((player) => {
     const playerProfile = showPlayerProfiles(player);
     playerContainer.appendChild(playerProfile);
   });
 }
 
-function updateStarters() {
-  getProjectedData().then(function (data) {
-    const players = data.players;
-    const drafted = JSON.parse(localStorage.getItem("fantasyTeam")) || [];
+function getTopByPosition(players, pos, count) {
+  return players
+    .filter((p) => p.position === pos)
+    .sort((a, b) => b.proj_pts - a.proj_pts)
+    .slice(0, count);
+}
 
-    const matched = drafted.map(function (d) {
-      return players.find(function (p) {
-        return p.name === d.name && p.team === d.team;
-      });
-    }).filter(Boolean);
+async function updateStarters() {
+  const data = await getProjectedData();
+  const players = data.players;
 
-    function getTopByPosition(pos, count) {
-      return matched
-        .filter(function (p) { return p.position === pos; })
-        .sort(function (a, b) { return b.proj_pts - a.proj_pts; })
-        .slice(0, count);
-    }
+  const res = await fetch('/team');
+  const drafted = await res.json();
 
-    let starters = [];
-    starters = starters.concat(getTopByPosition("QB", 1));
-    starters = starters.concat(getTopByPosition("RB", 2));
-    starters = starters.concat(getTopByPosition("WR", 2));
-    starters = starters.concat(getTopByPosition("TE", 1));
+  const matched = drafted.map((d) =>
+    players.find((p) => p.name === d.name && p.team === d.team)
+  ).filter(Boolean);
 
-    const starterBox = document.getElementById("starterList");
-    starterBox.innerHTML = "";
+  let starters = [];
+  starters = starters.concat(getTopByPosition(matched, "QB", 1));
+  starters = starters.concat(getTopByPosition(matched, "RB", 2));
+  starters = starters.concat(getTopByPosition(matched, "WR", 2));
+  starters = starters.concat(getTopByPosition(matched, "TE", 1));
 
-    starters.forEach(function (player, index) {
-      const div = document.createElement("div");
-      div.className = "starterCard";
-      const canvasId = `chart-${index}`;
+  const starterBox = document.getElementById("starterList");
+  starterBox.innerHTML = "";
 
-      div.innerHTML = `
-        <strong>${player.name}</strong> (${player.position} - ${player.team})<br>
-        Projected Points: ${player.proj_pts}<br>
-        <canvas id="${canvasId}" width="200" height="100"></canvas>
-      `;
-      starterBox.appendChild(div);
+  starters.forEach((player, index) => {
+    const div = document.createElement("div");
+    div.className = "starterCard";
+    const canvasId = `chart-${index}`;
 
-      // Chart.js config
-      const ctx = document.getElementById(canvasId).getContext('2d');
-      const chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ['Conservative', 'Aggressive'],
-          datasets: [{
-            label: 'Projection Type',
-            data: [player.proj_pts_conservative, player.proj_pts_aggressive],
-            backgroundColor: ['#36A2EB', '#FF6384']
-          }]
+    div.innerHTML = `
+      <strong>${player.name}</strong> (${player.position} - ${player.team})<br>
+      Projected Points: ${player.proj_pts}<br>
+      <canvas id="${canvasId}" width="200" height="100"></canvas>
+    `;
+    starterBox.appendChild(div);
+
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Conservative', 'Aggressive'],
+        datasets: [{
+          label: 'Projection Type',
+          data: [player.proj_pts_conservative, player.proj_pts_aggressive],
+          backgroundColor: ['#36A2EB', '#FF6384']
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { beginAtZero: true }
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          },
-          plugins: {
-            legend: { display: false }
-          }
+        plugins: {
+          legend: { display: false }
         }
-      });
+      }
     });
   });
 }
