@@ -13,14 +13,14 @@ const supabaseKey =
 
 const supabase = supabaseClient.createClient(supabaseUrl, supabaseKey);
 
-// GET all drafted players
+// Get drafted players
 app.get('/team', async (req, res) => {
   const { data, error } = await supabase.from('players').select('*');
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });
 
-// POST a new drafted player
+// Post drafted players
 app.post('/team', async (req, res) => {
   const { name, team, position } = req.body;
   const { data, error } = await supabase
@@ -30,7 +30,7 @@ app.post('/team', async (req, res) => {
   res.status(201).json(data);
 });
 
-// DELETE a drafted player
+// Delete drafted players
 app.delete('/team', async (req, res) => {
   const { name, team } = req.body;
   const { error } = await supabase
@@ -44,3 +44,5 @@ app.delete('/team', async (req, res) => {
 app.listen(port, () => {
   console.log('App alive on port:', port);
 });
+
+// http://localhost:3000/home_page.html
