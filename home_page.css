@@ -43,3 +43,14 @@ body {
     height: auto;
 }
 
+#teamSlider {
+    width: 150px;
+    height: 150px;
+    margin: auto;
+    position: relative;
+    overflow: hidden;
+}
+  
+#teamSlider img {
+    border-radius: 10px;
+}
