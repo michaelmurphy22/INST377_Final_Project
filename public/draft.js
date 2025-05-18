@@ -13,15 +13,17 @@ function getProjectedData() {
 function showPlayerProfiles(player) {
   const div = document.createElement("div");
   div.className = "playerProfile";
+
   div.innerHTML = `
     <h3>${player.name}</h3>
     <p>Team: ${player.team}</p>
     <p>Position: ${player.position}</p>
     <p>Rank: ${player.rank}</p>
     <p>Injury Risk: ${player.injury_risk}</p>
-    <button onclick="addToDraft('${player.name}', '${player.team}', '${player.position}', ${player.playerId})">Add to Team</button>
+    <button onclick='addToDraft(${JSON.stringify(player.name)}, ${JSON.stringify(player.team)}, ${JSON.stringify(player.position)}, ${JSON.stringify(player.playerId)})'>Add to Team</button>
     <button onclick="removeFromDraftCard(this)">Remove</button>
   `;
+
   return div;
 }
 
@@ -34,18 +36,25 @@ function removeFromDraftCard(button) {
 }
 
 async function addToDraft(name, team, position, player_id) {
-  await fetch('/team', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, team, position, player_id })
-  });
+  try {
+    const res = await fetch('/api/team', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, team, position, player_id })
+    });
 
-  renderDraftedList();
-  updateStarters();
+    const result = await res.json();
+    console.log("Add result:", result);
+
+    renderDraftedList();
+    updateStarters();
+  } catch (err) {
+    console.error("Failed to add player:", err);
+  }
 }
 
 async function removeFromDraft(name, team) {
-  await fetch('/team', {
+  await fetch('/api/team', {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, team })
@@ -59,7 +68,7 @@ async function renderDraftedList() {
   const list = document.getElementById("draftedList");
   list.innerHTML = "";
 
-  const res = await fetch('/team');
+  const res = await fetch('/api/team');
   const teamData = await res.json();
 
   teamData.forEach(function (player) {
