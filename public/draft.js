@@ -36,21 +36,14 @@ function removeFromDraftCard(button) {
 }
 
 async function addToDraft(name, team, position, player_id) {
-  try {
-    const res = await fetch('/api/team', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, team, position, player_id })
-    });
+  await fetch('/api/team', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, team, position, player_id })
+  });
 
-    const result = await res.json();
-    console.log("Add result:", result);
-
-    renderDraftedList();
-    updateStarters();
-  } catch (err) {
-    console.error("Failed to add player:", err);
-  }
+  renderDraftedList();
+  updateStarters();
 }
 
 async function removeFromDraft(name, team) {
