@@ -1,16 +1,17 @@
 const express = require('express');
 const supabaseClient = require('@supabase/supabase-js');
+const path = require('path');
 
 const app = express();
 const port = 3000;
 
-app.use(express.static(__dirname));
+// Serve static HTML/CSS/JS files from root
+app.use(express.static(path.join(__dirname)));
 app.use(express.json());
 
-const supabaseUrl = 'https://evobpvdryqpojgclvghh.supabase.co';
-const supabaseKey = 
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2b2JwdmRyeXFwb2pnY2x2Z2hoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwODk4OTQsImV4cCI6MjA2MjY2NTg5NH0.FeDZ-YRroV_KNKYeIC3JYqlONkqiQ0j69XXoh2X-ND4';
-
+// Load Supabase credentials from environment variables
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = supabaseClient.createClient(supabaseUrl, supabaseKey);
 
 // GET all drafted players
@@ -38,9 +39,7 @@ app.delete('/team', async (req, res) => {
   res.status(204).send();
 });
 
+// Start the server
 app.listen(port, () => {
-    console.log('App alive on port:', port);
+  console.log('App alive on port:', port);
 });
-
-
-// http://localhost:3000/home_page.html
