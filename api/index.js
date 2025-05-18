@@ -1,5 +1,6 @@
 const express = require('express');
 const supabaseClient = require('@supabase/supabase-js');
+
 const app = express();
 
 app.use(express.json());
