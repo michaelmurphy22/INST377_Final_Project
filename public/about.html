@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About — Fantasy Lineup Pro</title>
+  <link rel="stylesheet" href="about.css" />
+</head>
+<body>
+  <header>
+    <h1>About Fantasy Lineup Pro</h1>
+    <p>The ultimate data-driven fantasy football team builder—where every pick counts.</p>
+  </header>
+
+  <main>
+    <section id="mission">
+      <h2>Our Mission</h2>
+      <p>
+        To empower fantasy football enthusiasts—from casual players to seasoned analysts—
+        with real-time, data-backed insights that make every roster decision confident and calculable.
+      </p>
+    </section>
+
+    <section id="how-it-works">
+      <h2>How It Works</h2>
+      <ol>
+        <li>
+          <strong>Team Drafter Page:</strong>
+          Fetches the top-10 available players at each position (with projected points,
+          last season’s stats, injury risk) from the Fantasy Nerds Draft Rankings API.
+          Click “Add Position” and lock in high-value picks instantly.
+        </li>
+        <li>
+          <strong>Team Manager Page:</strong>
+          Uses the Fantasy Nerds Daily Fantasy Football API to compare your current starter’s
+          weekly projection against bench-player projections—so you can swap intelligently before kickoff.
+        </li>
+        <li>
+          <strong>Lineup Optimization:</strong>
+          Behind the scenes, we store your roster in Supabase and run machine-learning
+          models to flag breakout candidates and avoid risky picks.
+        </li>
+      </ol>
+    </section>
+
+    <section id="api-testing">
+      <h2>API Integration &amp; Testing</h2>
+      <ul>
+        <li><strong>Unit Tests:</strong> Verify REST/WebSocket requests and response parsing.</li>
+        <li><strong>Integration Tests:</strong> Simulate full flows on both pages to confirm data displays correctly.</li>
+        <li><strong>Load Tests:</strong> Use Apache JMeter to ensure sub-second responses even during peak NFL traffic.</li>
+      </ul>
+    </section>
+
+    <section id="codebase-overview">
+      <h2>Codebase Overview</h2>
+      <p>Here’s where everything lives and how it fits together:</p>
+      <dl>
+        <dt><strong>Authentication</strong></dt>
+        <dd>
+          <code>login.html</code> &amp; <code>login.js</code> handle the login form and client-side redirect.
+        </dd>
+
+        <dt><strong>Home / Team Carousel</strong></dt>
+        <dd>
+          <code>index.html</code> (landing page) with nav links to Home, Draft, and About.<br/>
+          <code>home_page.js</code> fetches your team from <code>/api/team</code> and kicks off the slider.<br/>
+          <code>simpleslider.js</code> powers the lightweight carousel.<br/>
+          Styles are in <code>home_page.css</code>.
+        </dd>
+
+        <dt><strong>Draft Builder</strong></dt>
+        <dd>
+          <code>draft.html</code> &amp; <code>draft.css</code> lay out the pick-and-swap UI.<br/>
+          <code>draft.js</code> loads rankings/projections, renders cards, maintains your roster list, and draws bar charts.
+        </dd>
+
+        <dt><strong>Backend API</strong></dt>
+        <dd>
+          <code>index.js</code> in <code>/api/</code> exposes <code>/api/team</code> endpoints (GET/POST/DELETE),
+          backed by Supabase.
+        </dd>
+
+        <dt><strong>Tooling &amp; Config</strong></dt>
+        <dd>
+          <code>.gitignore</code> excludes <code>node_modules</code>, env files, and logs.<br/>
+          <code>vercel.json</code> and lockfiles configure deployment and ensure reproducible installs.
+        </dd>
+      </dl>
+    </section>
+
+    <section id="who-we-serve">
+      <h2>Who We Serve</h2>
+      <ul>
+        <li><strong>Fantasy Players:</strong> Get smarter lineups with zero guesswork.</li>
+        <li><strong>Analysts &amp; Journalists:</strong> Access data-driven insights for coverage.</li>
+        <li><strong>Platform Developers:</strong> Plug our engine into your own apps.</li>
+        <li><strong>Content Creators:</strong> Craft compelling, stats-backed narratives.</li>
+      </ul>
+    </section>
+
+    <section id="team">
+      <h2>Meet the Team</h2>
+      <p><strong>Michael Murphy</strong> &amp; <strong>Sriram Pradeep</strong><br/>
+         Undergraduate students and lifelong football fans, we combined our technical chops and passion
+         for the game to build a tool that makes every roster move count.
+      </p>
+    </section>
+
+    <section id="get-started">
+      <h2>Get Started</h2>
+      <p>Ready to draft like a pro? <a href="signup.html">Sign up today</a> and turn data into decisions.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Fantasy Lineup Pro. All rights reserved.</p>
+  </footer>
+</body>
+</html>
