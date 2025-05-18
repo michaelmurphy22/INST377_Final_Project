@@ -13,7 +13,6 @@ function getProjectedData() {
 function showPlayerProfiles(player) {
   const div = document.createElement("div");
   div.className = "playerProfile";
-
   div.innerHTML = `
     <h3>${player.name}</h3>
     <p>Team: ${player.team}</p>
@@ -23,7 +22,6 @@ function showPlayerProfiles(player) {
     <button onclick='addToDraft(${JSON.stringify(player.name)}, ${JSON.stringify(player.team)}, ${JSON.stringify(player.position)}, ${JSON.stringify(player.playerId)})'>Add to Team</button>
     <button onclick="removeFromDraftCard(this)">Remove</button>
   `;
-
   return div;
 }
 
@@ -41,9 +39,8 @@ async function addToDraft(name, team, position, player_id) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, team, position, player_id })
   });
-
-  renderDraftedList();
-  updateStarters();
+  await renderDraftedList();
+  await updateStarters();
 }
 
 async function removeFromDraft(name, team) {
@@ -52,9 +49,8 @@ async function removeFromDraft(name, team) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, team })
   });
-
-  renderDraftedList();
-  updateStarters();
+  await renderDraftedList();
+  await updateStarters();
 }
 
 async function renderDraftedList() {
@@ -112,7 +108,7 @@ function getTopByPosition(players, pos, count) {
 
 async function updateStarters() {
   const projected = await getProjectedData();
-  const allPlayers = projected.players;
+  const allPlayers = projected.players || [];
 
   const res = await fetch('/api/team');
   const drafted = await res.json();
