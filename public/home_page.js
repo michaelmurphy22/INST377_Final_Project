@@ -1,10 +1,10 @@
 async function loadTeamImages() {
-  const res = await fetch('/team');
+  const res = await fetch('/api/team');
   const team = await res.json();
-  
+
   const container = document.getElementById("teamSlider");
   container.innerHTML = "";
-  
+
   team.forEach((player, index) => {
     if (player.player_id) {
       const img = document.createElement("img");
@@ -17,7 +17,7 @@ async function loadTeamImages() {
       container.appendChild(img);
     }
   });
-  
+
   simpleslider.getSlider({
     container: container,
     prop: 'left',
@@ -27,5 +27,5 @@ async function loadTeamImages() {
     unit: 'px'
   });
 }
-  
+
 window.onload = loadTeamImages;
