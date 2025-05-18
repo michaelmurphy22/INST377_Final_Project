@@ -112,7 +112,7 @@ async function updateStarters() {
   const projected = await getProjectedData();
   const allPlayers = projected.players;
 
-  const res = await fetch('/team');
+  const res = await fetch('/api/team');
   const drafted = await res.json();
 
   const matched = drafted.map(function (d) {
