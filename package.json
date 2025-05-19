@@ -1,7 +1,6 @@
 {
   "name": "inst377_final_project",
   "version": "1.0.0",
-  "description": "",
   "main": "api/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,12 +8,6 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/michaelmurphy22/INST377_Final_Project.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/michaelmurphy22/INST377_Final_Project/issues"
   },
   "homepage": "https://github.com/michaelmurphy22/INST377_Final_Project#readme",
   "dependencies": {

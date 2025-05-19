@@ -27,7 +27,7 @@ function showPlayerProfiles(player) {
 
 function removeFromDraftCard(button) {
   const card = button.parentElement;
-  const name = card.querySelector("h3").textContent;
+  const name = card.querySelector("h3").innerHTML;
   removedFromDraftList.push(name);
   card.remove();
   loadPlayers();
@@ -62,10 +62,10 @@ async function renderDraftedList() {
 
   teamData.forEach(function (player) {
     const item = document.createElement("li");
-    item.textContent = `${player.name} (${player.team} - ${player.position})`;
+    item.innerHTML = `${player.name} (${player.team} - ${player.position})`;
 
     const removeBtn = document.createElement("button");
-    removeBtn.textContent = "Remove";
+    removeBtn.innerHTML = "Remove";
     removeBtn.onclick = function () {
       removeFromDraft(player.name, player.team);
     };
